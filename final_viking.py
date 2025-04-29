@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, random
 from random import randint
 from src import config
 from src import sprites
@@ -8,7 +8,7 @@ pygame.init()
 pygame.mixer.init()
 pygame.mouse.set_visible(False)
 
-pygame.display.set_caption("Fell off")
+pygame.display.set_caption("")
 clock = pygame.time.Clock()
 
 class Player(pygame.sprite.Sprite):
@@ -115,7 +115,7 @@ class Collectables(pygame.sprite.Sprite):
             self.image = pygame.transform.smoothscale(sprites.enemy_fly_image_asset, (70, 70))
         elif item == "beer":
             self.image = pygame.transform.smoothscale(sprites.health_beer_image_asset, (70, 70))
-        distance_between_items = 4000 
+        distance_between_items = 3000 
         self.rect.topright = (x_of_horizontal_column * 50, config.SCREEN_HEIGHT - 200 + distance_between_items * amount_of_collectables + 400 * x_of_horizontal_column)
 
     def update(self):
@@ -142,6 +142,7 @@ while True:
             game_states.death()
         death = 1
         game_over = False
+        config.background_scroll = 0
         All_Sprites_Group = pygame.sprite.Group()
         Non_Breakable_Floor_Group = pygame.sprite.Group()
         player = Player()
@@ -177,6 +178,7 @@ while True:
 
     if pygame.sprite.spritecollide(player, Non_Breakable_Floor_Group, True):
         config.current_scroll_speed = 5
+        random.choice([sprites.steve_sound, sprites.scream_sound]).play()
         if not player.is_invulnerable:
             player.change_sprite(player.hurt_image, duration=30) 
             player.is_invulnerable = True
@@ -186,9 +188,11 @@ while True:
     
     if pygame.sprite.spritecollide(player, Wing_Group, True):
         config.current_scroll_speed = 0
+        sprites.wing_sound.play()
 
     if pygame.sprite.spritecollide(player, Beer_Group, True):
         player.get_health(20)
+        sprites.drink_sound.play()
 
     background()
     All_Sprites_Group.update()  

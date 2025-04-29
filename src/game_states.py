@@ -3,15 +3,17 @@ from src import config
 from src import sprites
 
 def continue_game_state():
-    while True:   #make the function out of it
-        for event in pygame.event.get():  #optimize
+    while True:
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return 
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:
-                    return
-
+                return 
+            
 def introduction_cutscene():
     intro_cutscene = pygame.transform.scale(sprites.intro_image_asset, (config.SCREEN_WIDTH, config.SCREEN_HEIGHT))
     intro_cutscene_rect = intro_cutscene.get_rect() 
